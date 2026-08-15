@@ -102,6 +102,13 @@
   .swatch .dot::after{content:"";position:absolute;right:0;top:0;bottom:0;width:42%;background:var(--h)}
   .swatch .nm{font-size:13.5px;font-weight:600;color:var(--app-ink);line-height:1.3}
   .swatch .nm small{display:block;font-size:11px;font-weight:400;color:var(--app-soft);letter-spacing:.02em}
+  .fx-pick{display:flex;gap:8px;flex-wrap:wrap}
+  .fx-pick button{border:1px solid var(--app-line);background:#FCFAF6;padding:8px 14px;border-radius:8px;font-size:13px;color:var(--app-ink)}
+  .fx-pick button.on{border-color:var(--sage);background:#fff;color:var(--sage-deep);box-shadow:0 0 0 3px rgba(126,139,109,.12)}
+  .toggles{display:flex;flex-direction:column;gap:11px}
+  .tg{display:flex;align-items:center;gap:10px;font-size:13.5px;color:var(--app-ink);font-weight:500;cursor:pointer}
+  .tg input{width:16px;height:16px;accent-color:var(--sage)}
+  .tg small{color:var(--app-soft);font-weight:400}
 
   /* ---------- Preview panel ---------- */
   .preview{
@@ -135,6 +142,11 @@ const INVITE_CSS = `
 .invite.theme-ink .eyebrow{color:var(--soft)}
 /* ---- Theme: Hanji (Korean traditional — 쪽빛 indigo + 단청 vermilion) ---- */
 .invite.theme-hanji{--ivory:#F4EFE2;--paper:#FBF7EC;--ink:#2B2A2E;--soft:#615E64;--faint:#948F86;--line:#E1D8C4;--sage:#3E4C6B;--sage-deep:#2A3550;--rose:#B34F3B}
+/* ---- Theme: Classic (warm ivory + antique gold) ---- */
+.invite.theme-classic{--ivory:#F3EBDD;--paper:#FCF7EE;--ink:#3A3128;--soft:#6F6455;--faint:#A2957F;--line:#E5D9C3;--sage:#A9843F;--sage-deep:#836123;--rose:#B48A54}
+.invite.theme-classic .eyebrow{letter-spacing:.38em}
+/* ---- Theme: Botanic (deep forest green + warm clay) ---- */
+.invite.theme-botanic{--ivory:#F6F4EC;--paper:#FFFFFF;--ink:#232B22;--soft:#5A6357;--faint:#939A8C;--line:#DDE1D1;--sage:#3B5A3A;--sage-deep:#274227;--rose:#B5765A}
 .invite *{box-sizing:border-box;margin:0}
 .invite .sec{padding:52px 30px;text-align:center;position:relative}
 .invite .eyebrow{font-family:var(--serif);font-size:11px;letter-spacing:.34em;text-transform:uppercase;color:var(--sage);margin-bottom:20px}
@@ -198,6 +210,36 @@ const INVITE_CSS = `
 .invite .foot .heart{color:var(--rose);font-size:15px}
 .invite .foot .fnames{font-family:var(--kserif);font-size:15px;color:var(--ink);letter-spacing:.06em;margin-top:14px}
 .invite .empty-note{color:var(--faint);font-style:italic;font-size:13px}
+
+/* falling effect */
+.invite .fxwrap{position:sticky;top:0;height:0;z-index:1;pointer-events:none}
+.invite .fx{position:absolute;top:0;left:0;width:100%;height:100vh;pointer-events:none}
+
+/* background music button */
+.invite .musicwrap{position:sticky;bottom:0;height:0;z-index:9;pointer-events:none}
+.invite .musicbtn{position:absolute;right:16px;bottom:18px;width:44px;height:44px;border-radius:50%;border:none;background:var(--sage);color:#fff;font-size:16px;box-shadow:0 6px 18px rgba(0,0,0,.22);pointer-events:auto;cursor:pointer;display:grid;place-items:center}
+.invite .musicbtn.playing{animation:mc-spin 4.5s linear infinite}
+@keyframes mc-spin{to{transform:rotate(360deg)}}
+
+/* live countdown */
+.invite .countdown{display:flex;justify-content:center;gap:9px;margin-top:24px}
+.invite .cd-cell{min-width:54px;padding:11px 6px;border:1px solid var(--line);border-radius:11px;background:var(--paper)}
+.invite .cd-cell b{display:block;font-family:var(--serif);font-size:21px;color:var(--ink);font-variant-numeric:tabular-nums;font-weight:500}
+.invite .cd-cell span{font-size:11px;color:var(--faint);letter-spacing:.12em}
+
+/* guestbook */
+.invite .gb{max-width:330px;margin:16px auto 0;text-align:left}
+.invite .gb-form{display:flex;flex-direction:column;gap:8px;margin-bottom:18px}
+.invite .gb-form input,.invite .gb-form textarea{border:1px solid var(--line);border-radius:9px;padding:10px 12px;font-family:inherit;font-size:13.5px;background:var(--paper);color:var(--ink);width:100%}
+.invite .gb-form textarea{min-height:62px;resize:vertical;line-height:1.6}
+.invite .gb-form input:focus,.invite .gb-form textarea:focus{outline:none;border-color:var(--sage)}
+.invite .gb-form button{border:none;background:var(--sage);color:#fff;padding:11px;border-radius:9px;font-size:13.5px;font-weight:600;cursor:pointer}
+.invite .gb-form button:disabled{opacity:.6}
+.invite .gb-list{display:flex;flex-direction:column;gap:10px}
+.invite .gb-item{border:1px solid var(--line);border-radius:11px;padding:12px 14px;background:var(--paper)}
+.invite .gb-item .who{font-size:12.5px;font-weight:700;color:var(--sage-deep);margin-bottom:4px}
+.invite .gb-item .msg{font-size:13px;color:var(--soft);white-space:pre-line}
+.invite .gb-empty{font-size:12.5px;color:var(--faint);text-align:center;padding:16px}
 `;
 </script>
 
@@ -207,7 +249,8 @@ const INVITE_CSS = `
     <button class="btn ghost" id="btn-sample">예시 채우기</button>
     <button class="btn ghost" id="btn-reset">초기화</button>
     <button class="btn" id="btn-link">🔗 링크 복사</button>
-    <button class="btn primary" id="btn-download">청첩장 HTML 저장</button>
+    <button class="btn" id="btn-download">HTML 저장</button>
+    <button class="btn primary" id="btn-cloud">☁ 클라우드 링크</button>
   </div>
 
   <div class="editor" id="editor">
@@ -221,6 +264,10 @@ const INVITE_CSS = `
         <span class="dot" style="background:#F7F6F4"></span><span class="nm">모던블랙<small>미니멀 · 모노톤</small></span></button>
       <button class="swatch" data-theme="hanji" style="--h:#3E4C6B">
         <span class="dot" style="background:#F4EFE2"></span><span class="nm">한지<small>전통 · 쪽빛 & 단청</small></span></button>
+      <button class="swatch" data-theme="classic" style="--h:#A9843F">
+        <span class="dot" style="background:#F3EBDD"></span><span class="nm">클래식<small>웜 아이보리 · 앤틱골드</small></span></button>
+      <button class="swatch" data-theme="botanic" style="--h:#3B5A3A">
+        <span class="dot" style="background:#F6F4EC"></span><span class="nm">보태니컬<small>딥 포레스트 그린</small></span></button>
     </div>
 
     <h2><span class="n">01</span> 표지 · 두 사람</h2>
@@ -281,6 +328,29 @@ const INVITE_CSS = `
       <div id="acct-bride"></div>
       <button class="addacct" data-side="bride">＋ 계좌 추가</button>
     </div>
+
+    <h2><span class="n">07</span> 효과 · 기능</h2>
+    <div class="field">
+      <label>배경음악 (mp3)</label>
+      <div class="imgrow">
+        <label class="filebtn">♪ 음악 파일<input type="file" accept="audio/*" id="music-file" hidden></label>
+        <button class="btn ghost" id="music-clear" style="display:none;font-size:12px;padding:6px 10px">제거</button>
+      </div>
+      <div class="hint" id="music-name">청첩장을 열면 우측 하단에 재생 버튼이 생겨요 (자동재생은 브라우저가 막아 수동 재생)</div>
+    </div>
+    <div class="field">
+      <label>떨어지는 효과</label>
+      <div class="fx-pick" id="fx-pick">
+        <button data-fx="none">없음</button>
+        <button data-fx="petals">🌸 꽃잎</button>
+        <button data-fx="snow">❄️ 눈</button>
+        <button data-fx="hearts">🤍 하트</button>
+      </div>
+    </div>
+    <div class="field toggles">
+      <label class="tg"><input type="checkbox" data-t="countdown"> 실시간 카운트다운 <small>(예식까지 남은 시간)</small></label>
+      <label class="tg"><input type="checkbox" data-t="guestbook"> 방명록 <small>(하객 축하 메시지 · 클라우드 공유)</small></label>
+    </div>
   </div>
 
   <div class="preview">
@@ -291,14 +361,19 @@ const INVITE_CSS = `
 
 <script>
 /* ---------------- State ---------------- */
+/* Supabase (guestbook + cloud save) — publishable key is safe to embed */
+const SUPA_URL="https://emqkhunzbbcanprikbaz.supabase.co";
+const SUPA_KEY="sb_publishable_XjgXsvUPr6A1pIc6HdWmGQ_UOUtbo4o";
+
 const BLANK = {
   theme:"sage",
   groom:"",bride:"",cover:"",greeting:"",groomParents:"",brideParents:"",
   date:"",time:"",gallery:[],venue:"",hall:"",address:"",transport:"",
-  acctGroom:[],acctBride:[]
+  acctGroom:[],acctBride:[],
+  music:"",musicName:"",effect:"none",countdown:true,guestbook:true,slug:""
 };
 const SAMPLE = {
-  theme:"sage",
+  theme:"sage",effect:"petals",countdown:true,guestbook:true,music:"",musicName:"",slug:"",
   groom:"김민준",bride:"이서연",cover:"",
   greeting:"서로 다른 길을 걸어온 두 사람이\n이제 같은 곳을 바라보며\n한 길을 함께 걷고자 합니다.\n\n오셔서 축복해 주시면\n더없는 기쁨으로 간직하겠습니다.",
   groomParents:"김철수 · 박영희",brideParents:"이정호 · 최민경",
@@ -373,7 +448,40 @@ function renderInvite(d, forExport){
       <div class="acc">${acctSide("신랑측 계좌번호",d.acctGroom)}${acctSide("신부측 계좌번호",d.acctBride)}</div>
     </div>` : "";
 
+  // falling effect + background music
+  const fx = (d.effect&&d.effect!=="none") ? `<div class="fxwrap"><canvas class="fx" data-effect="${d.effect}"></canvas></div>` : "";
+  const music = d.music ? `<audio id="bgm" src="${d.music}" loop preload="auto"></audio>` : "";
+  const musicBtn = d.music ? `<div class="musicwrap"><button class="musicbtn" data-music aria-label="배경음악 재생">♪</button></div>` : "";
+
+  // live countdown to the ceremony
+  const target = dt && d.time ? new Date(d.date+"T"+d.time) : (dt ? new Date(d.date+"T00:00") : null);
+  const isFuture = target && target.getTime() > Date.now();
+  const countdown = (d.countdown && isFuture) ? `
+    <div class="countdown" data-countdown data-target="${target.getTime()}">
+      <div class="cd-cell"><b class="d">–</b><span>일</span></div>
+      <div class="cd-cell"><b class="h">–</b><span>시</span></div>
+      <div class="cd-cell"><b class="m">–</b><span>분</span></div>
+      <div class="cd-cell"><b class="s">–</b><span>초</span></div>
+    </div>` : "";
+
+  // guestbook (real & shared in exported file; static in preview)
+  const slug = d.slug || "preview";
+  const guestbook = d.guestbook ? `
+    <div class="sec">
+      <div class="eyebrow">Guestbook</div>
+      <div class="stitle">축하 방명록</div>
+      <div class="gb" data-gb data-slug="${esc(slug)}" data-url="${SUPA_URL}" data-key="${SUPA_KEY}">
+        <div class="gb-form">
+          <input class="gb-name" maxlength="20" placeholder="이름">
+          <textarea class="gb-msg" maxlength="300" placeholder="축하 메시지를 남겨주세요"></textarea>
+          <button class="gb-send">축하 남기기</button>
+        </div>
+        <div class="gb-list"><div class="gb-empty">불러오는 중…</div></div>
+      </div>
+    </div>` : "";
+
   return `
+  ${fx}${music}`+`
   <div class="sec cover">
     ${cover}
     <div class="cover-body">
@@ -397,27 +505,104 @@ function renderInvite(d, forExport){
     <div class="eyebrow">The Day</div>
     <div class="bigdate">${dateLine}<span class="dow">${dt?DOW[dt.getDay()]+"요일 "+timeLine:""}</span></div>
     ${dday?`<div class="dday">${dday}</div>`:""}
+    ${countdown}
   </div>
 
   ${gallery}
   ${location}
   ${accounts}
+  ${guestbook}
 
   <div class="foot">
     <div class="heart">♥</div>
     <div class="fnames">${esc(d.groom||"신랑")} · ${esc(d.bride||"신부")}</div>
-  </div>`;
+  </div>
+  ${musicBtn}`;
 }
 function toKTime(t){ const [h,m]=t.split(":").map(Number); const ap=h<12?"오전":"오후"; const h12=h%12||12; return `${ap} ${h12}시${m?` ${m}분`:""}`; }
 
-/* Interactions inside an invitation (works in preview + exported file) */
+/* Interactions inside an invitation — self-contained so it also runs in the exported file */
 function bindInvite(root){
-  root.querySelectorAll("[data-acc]").forEach(b=>b.onclick=()=>b.closest(".acc-side").classList.toggle("open"));
-  root.querySelectorAll("[data-copy]").forEach(b=>b.onclick=()=>{
-    navigator.clipboard?.writeText(b.dataset.copy);
-    const t=b.textContent;b.textContent="복사됨";b.classList.add("done");
-    setTimeout(()=>{b.textContent=t;b.classList.remove("done")},1200);
-  });
+  if(root._raf)cancelAnimationFrame(root._raf);
+  if(root._cd)clearInterval(root._cd);
+  if(root._fxResize){window.removeEventListener("resize",root._fxResize);root._fxResize=null;}
+
+  // account accordions + copy
+  root.querySelectorAll("[data-acc]").forEach(function(b){b.onclick=function(){b.closest(".acc-side").classList.toggle("open");};});
+  root.querySelectorAll("[data-copy]").forEach(function(b){b.onclick=function(){
+    if(navigator.clipboard)navigator.clipboard.writeText(b.dataset.copy);
+    var t=b.textContent;b.textContent="복사됨";b.classList.add("done");
+    setTimeout(function(){b.textContent=t;b.classList.remove("done");},1200);
+  };});
+
+  // background music
+  var mbtn=root.querySelector("[data-music]"),audio=root.querySelector("#bgm");
+  if(mbtn&&audio){mbtn.onclick=function(){
+    if(audio.paused){audio.play();mbtn.classList.add("playing");}
+    else{audio.pause();mbtn.classList.remove("playing");}
+  };}
+
+  // live countdown
+  var cd=root.querySelector("[data-countdown]");
+  if(cd){var target=+cd.dataset.target;
+    var tick=function(){var diff=Math.max(0,target-Date.now()),s=Math.floor(diff/1000);
+      var pad=function(n){return String(n).padStart(2,"0");};
+      cd.querySelector(".d").textContent=Math.floor(s/86400);
+      cd.querySelector(".h").textContent=pad(Math.floor(s%86400/3600));
+      cd.querySelector(".m").textContent=pad(Math.floor(s%3600/60));
+      cd.querySelector(".s").textContent=pad(s%60);};
+    tick();root._cd=setInterval(tick,1000);}
+
+  // falling petals / snow / hearts
+  var cv=root.querySelector(".fx"),reduce=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if(cv&&!reduce){
+    var kind=cv.dataset.effect,ctx=cv.getContext("2d"),parts=[];
+    var col=(getComputedStyle(root).getPropertyValue("--rose")||"#C0857E").trim();
+    var size=function(){cv.width=cv.clientWidth;cv.height=cv.clientHeight;};
+    root._fxResize=size;window.addEventListener("resize",size);size();
+    var N=kind==="snow"?48:kind==="hearts"?24:32;
+    for(var i=0;i<N;i++)parts.push({x:Math.random(),y:Math.random(),r:6+Math.random()*7,sp:.12+Math.random()*.4,ph:Math.random()*6.28});
+    var shape=function(x,y,r){
+      if(kind==="snow"){ctx.globalAlpha=.85;ctx.fillStyle="#B7C7D8";ctx.beginPath();ctx.arc(x,y,r*.32,0,6.283);ctx.fill();return;}
+      ctx.globalAlpha=.72;ctx.fillStyle=col;
+      if(kind==="hearts"){ctx.save();ctx.translate(x,y);ctx.scale(r*.07,r*.07);ctx.beginPath();
+        ctx.moveTo(0,3);ctx.bezierCurveTo(-5,-3,-11,3,0,10);ctx.bezierCurveTo(11,3,5,-3,0,3);ctx.fill();ctx.restore();return;}
+      ctx.save();ctx.translate(x,y);ctx.rotate(y*.03);ctx.beginPath();ctx.ellipse(0,0,r*.5,r*.9,0,0,6.283);ctx.fill();ctx.restore();
+    };
+    var draw=function(){ctx.globalAlpha=1;ctx.clearRect(0,0,cv.width,cv.height);var w=cv.width,h=cv.height;
+      for(var i=0;i<parts.length;i++){var p=parts[i];p.y+=p.sp/100;p.ph+=.02;
+        if(p.y>1.06){p.y=-.06;p.x=Math.random();}
+        shape((p.x+Math.sin(p.ph)*.03)*w,p.y*h,p.r);}
+      root._raf=requestAnimationFrame(draw);};
+    draw();
+  }
+
+  // guestbook — live & shared via Supabase (skipped for the in-app 'preview' slug)
+  var gb=root.querySelector("[data-gb]");
+  if(gb){
+    var url=gb.dataset.url,key=gb.dataset.key,slug=gb.dataset.slug;
+    var list=gb.querySelector(".gb-list"),nm=gb.querySelector(".gb-name"),ms=gb.querySelector(".gb-msg"),send=gb.querySelector(".gb-send");
+    var eh=function(s){return (s||"").replace(/[&<>]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;"}[c];});};
+    if(slug==="preview"){
+      list.innerHTML='<div class="gb-empty">실제 청첩장(HTML 저장/클라우드 링크)에서는<br>하객들의 축하 메시지가 여기에 실시간으로 쌓입니다.</div>';
+    }else{
+      var paint=function(rows){list.innerHTML=(rows&&rows.length)
+        ?rows.map(function(r){return '<div class="gb-item"><div class="who">'+eh(r.name)+'</div><div class="msg">'+eh(r.message)+'</div></div>';}).join("")
+        :'<div class="gb-empty">첫 축하 메시지를 남겨주세요 🤍</div>';};
+      var loadGb=function(){fetch(url+"/rest/v1/guestbook?slug=eq."+encodeURIComponent(slug)+"&select=name,message&order=created_at.desc&limit=200",
+        {headers:{apikey:key,Authorization:"Bearer "+key}}).then(function(r){return r.json();}).then(paint)
+        .catch(function(){list.innerHTML='<div class="gb-empty">방명록을 불러오지 못했어요.</div>';});};
+      send.onclick=function(){var n=nm.value.trim(),m=ms.value.trim();
+        if(!n||!m){alert("이름과 축하 메시지를 모두 입력해주세요.");return;}
+        send.disabled=true;send.textContent="남기는 중…";
+        fetch(url+"/rest/v1/guestbook",{method:"POST",headers:{apikey:key,Authorization:"Bearer "+key,"Content-Type":"application/json",Prefer:"return=minimal"},
+          body:JSON.stringify({slug:slug,name:n,message:m})})
+          .then(function(r){if(!r.ok)throw 0;nm.value="";ms.value="";loadGb();})
+          .catch(function(){alert("전송에 실패했어요. 잠시 후 다시 시도해주세요.");})
+          .then(function(){send.disabled=false;send.textContent="축하 남기기";});};
+      loadGb();
+    }
+  }
 }
 
 /* ---------------- Live preview ---------------- */
@@ -437,7 +622,23 @@ function syncInputs(){
   renderThumb("cover-thumb", data.cover?[data.cover]:[], true);
   renderThumb("gallery-thumb", data.gallery, false);
   renderAccts();
+  // section 07 controls
+  document.querySelectorAll("#fx-pick button").forEach(b=>b.classList.toggle("on",b.dataset.fx===(data.effect||"none")));
+  document.querySelectorAll("[data-t]").forEach(c=>c.checked=!!data[c.dataset.t]);
+  document.getElementById("music-name").textContent = data.music
+    ? "🎵 "+(data.musicName||"음악 첨부됨")
+    : "청첩장을 열면 우측 하단에 재생 버튼이 생겨요 (자동재생은 브라우저가 막아 수동 재생)";
+  document.getElementById("music-clear").style.display = data.music?"inline-flex":"none";
 }
+/* section 07 bindings */
+document.getElementById("music-file").addEventListener("change",async e=>{
+  const f=e.target.files[0]; if(!f) return;
+  if(f.size>5*1024*1024 && !confirm("음악 파일이 큽니다("+Math.round(f.size/1048576)+"MB). 저장 파일 용량이 커질 수 있어요. 계속할까요?")){e.target.value="";return;}
+  data.music=await readImg(f); data.musicName=f.name; syncInputs(); paint();
+});
+document.getElementById("music-clear").onclick=()=>{ data.music="";data.musicName=""; syncInputs(); paint(); };
+document.querySelectorAll("#fx-pick button").forEach(b=>b.onclick=()=>{ data.effect=b.dataset.fx; syncInputs(); paint(); });
+document.querySelectorAll("[data-t]").forEach(c=>c.addEventListener("change",()=>{ data[c.dataset.t]=c.checked; paint(); }));
 document.querySelectorAll("[data-k]").forEach(el=>{
   el.addEventListener("input",()=>{ data[el.dataset.k]=el.value; paint(); });
 });
@@ -491,7 +692,7 @@ document.getElementById("btn-reset").onclick=()=>{ if(confirm("입력한 내용�
 
 /* shareable link — text fields only (photos are too large for a URL) */
 document.getElementById("btn-link").onclick=()=>{
-  const light={...data,cover:data.cover?"__":"",gallery:data.gallery.map(()=>"__")};
+  const light={...data,cover:data.cover?"__":"",gallery:data.gallery.map(()=>"__"),music:data.music?"__":""};
   const enc=btoa(unescape(encodeURIComponent(JSON.stringify(light))));
   const url=location.origin+location.pathname+"#d="+enc;
   navigator.clipboard?.writeText(url);
@@ -501,9 +702,11 @@ document.getElementById("btn-link").onclick=()=>{
 };
 
 /* download standalone invitation (photos embedded) */
-document.getElementById("btn-download").onclick=()=>{
+function ensureSlug(){ if(!data.slug){ data.slug = Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,6); save(); } return data.slug; }
+function buildStandalone(){
+  ensureSlug();
   const title=`${data.groom||"신랑"} ♥ ${data.bride||"신부"} 모바일 청첩장`;
-  const html=`<!doctype html><html lang="ko"><head><meta charset="utf-8">
+  return `<!doctype html><html lang="ko"><head><meta charset="utf-8">
 <title>${esc(title)}</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta property="og:title" content="${esc(title)}">
@@ -511,11 +714,34 @@ document.getElementById("btn-download").onclick=()=>{
 </head><body><div class="wrap"><div class="invite theme-${data.theme||"sage"}">${renderInvite(data,true)}</div></div>
 <script>${bindInvite.toString()};bindInvite(document.querySelector('.invite'));<\/script>
 </body></html>`;
-  const blob=new Blob([html],{type:"text/html"});
+}
+document.getElementById("btn-download").onclick=()=>{
+  const blob=new Blob([buildStandalone()],{type:"text/html"});
   const a=document.createElement("a");
   a.href=URL.createObjectURL(blob);
   a.download=`${(data.groom||"신랑")}_${(data.bride||"신부")}_청첩장.html`;
   document.body.appendChild(a); a.click(); a.remove();
+};
+
+/* ☁ Cloud save — store the invitation and get a hosted link (viewer.html?s=slug) */
+document.getElementById("btn-cloud").onclick=async ()=>{
+  const b=document.getElementById("btn-cloud"), orig=b.textContent;
+  if(!data.groom||!data.bride){ alert("신랑·신부 이름을 먼저 입력해주세요."); return; }
+  b.disabled=true; b.textContent="저장 중…";
+  try{
+    const slug=ensureSlug();
+    const res=await fetch(SUPA_URL+"/rest/v1/invitations?on_conflict=slug",{
+      method:"POST",
+      headers:{apikey:SUPA_KEY,Authorization:"Bearer "+SUPA_KEY,"Content-Type":"application/json",Prefer:"resolution=merge-duplicates,return=minimal"},
+      body:JSON.stringify({slug,html:buildStandalone()})
+    });
+    if(!res.ok) throw new Error(await res.text());
+    const link=location.origin+location.pathname.replace(/[^/]*$/,"")+"viewer.html?s="+slug;
+    if(navigator.clipboard) navigator.clipboard.writeText(link);
+    prompt("청첩장이 클라우드에 저장됐어요. 이 링크를 하객에게 보내세요:", link);
+  }catch(e){
+    alert("클라우드 저장에 실패했어요.\n(로컬 파일에서 열었다면 인터넷 연결을, 아티팩트 미리보기라면 배포본에서 시도하세요)\n\n"+(e.message||e));
+  }finally{ b.disabled=false; b.textContent=orig; }
 };
 
 /* ---------------- Persistence ---------------- */
