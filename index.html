@@ -93,6 +93,15 @@
   .acct .x:hover{color:var(--rose)}
   .addacct{font-size:12px;color:var(--sage-deep);background:none;border:1px dashed var(--app-line);padding:6px 10px;border-radius:7px;width:100%}
   .addacct:hover{border-color:var(--sage)}
+  /* theme picker */
+  .themes{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+  .swatch{display:flex;align-items:center;gap:11px;padding:11px 13px;border:1px solid var(--app-line);border-radius:11px;background:#FCFAF6;transition:.15s;text-align:left}
+  .swatch:hover{border-color:var(--sage)}
+  .swatch.on{border-color:var(--sage);box-shadow:0 0 0 3px rgba(126,139,109,.14);background:#fff}
+  .swatch .dot{width:30px;height:30px;border-radius:50%;flex:none;border:1px solid rgba(0,0,0,.06);position:relative;overflow:hidden}
+  .swatch .dot::after{content:"";position:absolute;right:0;top:0;bottom:0;width:42%;background:var(--h)}
+  .swatch .nm{font-size:13.5px;font-weight:600;color:var(--app-ink);line-height:1.3}
+  .swatch .nm small{display:block;font-size:11px;font-weight:400;color:var(--app-soft);letter-spacing:.02em}
 
   /* ---------- Preview panel ---------- */
   .preview{
@@ -115,7 +124,17 @@
 <script>
 /* Invitation stylesheet — shared between live preview and exported file */
 const INVITE_CSS = `
-.invite{background:var(--ivory,#FAF6EE);color:var(--ink,#332F29);font-family:var(--sans,'Pretendard','Apple SD Gothic Neo','Noto Sans KR',system-ui,sans-serif);line-height:1.75;--ivory:#FAF6EE;--ink:#332F29;--soft:#6E675B;--faint:#9A9184;--line:#E9E0D2;--sage:#7E8B6D;--sage-deep:#5E6A4C;--rose:#C0857E;--serif:Georgia,'Times New Roman',serif;--kserif:'Nanum Myeongjo','Apple SD Gothic Neo',Georgia,serif}
+.invite{min-height:100%;background:var(--ivory,#FAF6EE);color:var(--ink,#332F29);font-family:var(--sans,'Pretendard','Apple SD Gothic Neo','Noto Sans KR',system-ui,sans-serif);line-height:1.75;--serif:Georgia,'Times New Roman',serif;--kserif:'Nanum Myeongjo','Apple SD Gothic Neo',Georgia,serif;
+  /* default = Sage */
+  --ivory:#FAF6EE;--paper:#FFFFFF;--ink:#332F29;--soft:#6E675B;--faint:#9A9184;--line:#E9E0D2;--sage:#7E8B6D;--sage-deep:#5E6A4C;--rose:#C0857E}
+/* ---- Theme: Blush (romantic pastel — dusty rose + soft gold) ---- */
+.invite.theme-blush{--ivory:#FCF6F3;--paper:#FFFFFF;--ink:#4A3A3A;--soft:#8A7175;--faint:#BDA7A9;--line:#F1E1DE;--sage:#C98A96;--sage-deep:#A85F70;--rose:#BFA069}
+/* ---- Theme: Ink (modern minimal — monochrome charcoal) ---- */
+.invite.theme-ink{--ivory:#F7F6F4;--paper:#FFFFFF;--ink:#1C1B1A;--soft:#5B5955;--faint:#9C9A95;--line:#E4E2DD;--sage:#2C2A27;--sage-deep:#000000;--rose:#7C7A75}
+.invite.theme-ink .names,.invite.theme-ink .stitle,.invite.theme-ink .venue{letter-spacing:.14em}
+.invite.theme-ink .eyebrow{color:var(--soft)}
+/* ---- Theme: Hanji (Korean traditional — 쪽빛 indigo + 단청 vermilion) ---- */
+.invite.theme-hanji{--ivory:#F4EFE2;--paper:#FBF7EC;--ink:#2B2A2E;--soft:#615E64;--faint:#948F86;--line:#E1D8C4;--sage:#3E4C6B;--sage-deep:#2A3550;--rose:#B34F3B}
 .invite *{box-sizing:border-box;margin:0}
 .invite .sec{padding:52px 30px;text-align:center;position:relative}
 .invite .eyebrow{font-family:var(--serif);font-size:11px;letter-spacing:.34em;text-transform:uppercase;color:var(--sage);margin-bottom:20px}
@@ -192,6 +211,18 @@ const INVITE_CSS = `
   </div>
 
   <div class="editor" id="editor">
+    <h2><span class="n">00</span> 디자인 테마</h2>
+    <div class="themes" id="themes">
+      <button class="swatch" data-theme="sage"  style="--h:#7E8B6D;background-image:none">
+        <span class="dot" style="background:#FAF6EE"></span><span class="nm">세이지<small>차분한 초록 · 내추럴</small></span></button>
+      <button class="swatch" data-theme="blush" style="--h:#C98A96">
+        <span class="dot" style="background:#FCF6F3"></span><span class="nm">블러쉬<small>로맨틱 파스텔 · 골드</small></span></button>
+      <button class="swatch" data-theme="ink"   style="--h:#2C2A27">
+        <span class="dot" style="background:#F7F6F4"></span><span class="nm">모던블랙<small>미니멀 · 모노톤</small></span></button>
+      <button class="swatch" data-theme="hanji" style="--h:#3E4C6B">
+        <span class="dot" style="background:#F4EFE2"></span><span class="nm">한지<small>전통 · 쪽빛 & 단청</small></span></button>
+    </div>
+
     <h2><span class="n">01</span> 표지 · 두 사람</h2>
     <div class="row">
       <div class="field"><label>신랑 이름</label><input data-k="groom" placeholder="김민준"></div>
@@ -261,11 +292,13 @@ const INVITE_CSS = `
 <script>
 /* ---------------- State ---------------- */
 const BLANK = {
+  theme:"sage",
   groom:"",bride:"",cover:"",greeting:"",groomParents:"",brideParents:"",
   date:"",time:"",gallery:[],venue:"",hall:"",address:"",transport:"",
   acctGroom:[],acctBride:[]
 };
 const SAMPLE = {
+  theme:"sage",
   groom:"김민준",bride:"이서연",cover:"",
   greeting:"서로 다른 길을 걸어온 두 사람이\n이제 같은 곳을 바라보며\n한 길을 함께 걷고자 합니다.\n\n오셔서 축복해 주시면\n더없는 기쁨으로 간직하겠습니다.",
   groomParents:"김철수 · 박영희",brideParents:"이정호 · 최민경",
@@ -390,7 +423,13 @@ function bindInvite(root){
 /* ---------------- Live preview ---------------- */
 document.getElementById("invite-css").textContent = INVITE_CSS;
 const preview=document.getElementById("preview");
-function paint(){ preview.innerHTML=renderInvite(data); bindInvite(preview); save(); }
+function paint(){
+  preview.className="invite theme-"+(data.theme||"sage");
+  preview.innerHTML=renderInvite(data); bindInvite(preview);
+  document.querySelectorAll("#themes .swatch").forEach(s=>s.classList.toggle("on",s.dataset.theme===(data.theme||"sage")));
+  save();
+}
+document.querySelectorAll("#themes .swatch").forEach(s=>s.onclick=()=>{ data.theme=s.dataset.theme; paint(); });
 
 /* ---------------- Editor bindings ---------------- */
 function syncInputs(){
@@ -468,8 +507,8 @@ document.getElementById("btn-download").onclick=()=>{
 <title>${esc(title)}</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta property="og:title" content="${esc(title)}">
-<style>html,body{margin:0}body{background:#EAE3D6}.wrap{max-width:440px;margin:0 auto;min-height:100vh;background:var(--ivory,#FAF6EE);box-shadow:0 0 60px rgba(0,0,0,.08)}${INVITE_CSS}</style>
-</head><body><div class="wrap"><div class="invite">${renderInvite(data,true)}</div></div>
+<style>html,body{margin:0}body{background:#EAE3D6}.wrap{max-width:440px;margin:0 auto;min-height:100vh;box-shadow:0 0 60px rgba(0,0,0,.08)}${INVITE_CSS}</style>
+</head><body><div class="wrap"><div class="invite theme-${data.theme||"sage"}">${renderInvite(data,true)}</div></div>
 <script>${bindInvite.toString()};bindInvite(document.querySelector('.invite'));<\/script>
 </body></html>`;
   const blob=new Blob([html],{type:"text/html"});
