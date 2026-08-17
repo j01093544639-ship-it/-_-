@@ -1,13 +1,14 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { ChevronRight, Check, Info, Truck, ShieldCheck, Star } from "lucide-react";
+import { ChevronRight, Truck, ShieldCheck, Star } from "lucide-react";
 import {
   getAllProducts,
   getProductBySlug,
   getReviewsByProduct,
 } from "@/lib/products";
 import { ProductImage } from "@/components/ProductImage";
+import { ProductStory } from "@/components/ProductStory";
 import { PurchaseOptions } from "@/components/PurchaseOptions";
 import { ReviewForm } from "@/components/ReviewForm";
 import { Badge, StarRating } from "@/components/ui";
@@ -153,74 +154,8 @@ export default async function ProductDetailPage({
         </div>
       </div>
 
-      {/* 특징 · 추천 · 성분 */}
-      <section className="mt-16 grid gap-10 lg:grid-cols-[1.6fr_1fr]">
-        <div>
-          <h2 className="font-display text-2xl font-extrabold text-ink">제품 특징</h2>
-          <ul className="mt-4 space-y-3">
-            {product.features.map((f, i) => (
-              <li key={i} className="flex gap-3 leading-relaxed text-muted">
-                <Check size={18} className="mt-0.5 shrink-0 text-sage" />
-                <span>{f}</span>
-              </li>
-            ))}
-          </ul>
-
-          <h2 className="mt-10 font-display text-2xl font-extrabold text-ink">
-            이런 분께 추천해요
-          </h2>
-          <div className="mt-4 flex flex-wrap gap-2.5">
-            {product.recommend.map((r) => (
-              <span
-                key={r}
-                className="rounded-full border border-line bg-cream px-4 py-2 text-sm text-ink"
-              >
-                {r}
-              </span>
-            ))}
-          </div>
-
-          <h2 className="mt-10 font-display text-2xl font-extrabold text-ink">섭취 방법</h2>
-          <p className="mt-3 leading-relaxed text-muted">{product.intake}</p>
-
-          <h2 className="mt-10 font-display text-2xl font-extrabold text-ink">원산지</h2>
-          <p className="mt-3 leading-relaxed text-muted">{product.origin}</p>
-
-          {/* 일반 건강식품 고지 */}
-          <div className="mt-8 flex gap-3 rounded-2xl border border-line bg-clay-tint/50 p-5">
-            <Info size={18} className="mt-0.5 shrink-0 text-clay" />
-            <div className="text-sm leading-relaxed text-ink/80">
-              <p className="font-semibold text-ink">섭취 시 주의사항</p>
-              <p className="mt-1">{product.caution}</p>
-              <p className="mt-2 text-muted">
-                본 제품은 일반 건강식품이며, 특정 질병의 예방·치료 효과나 의약품의 대체
-                효능을 표방하지 않습니다.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* 원료 및 함량 */}
-        <div>
-          <h2 className="font-display text-2xl font-extrabold text-ink">원료 및 함량</h2>
-          <ul className="mt-4 overflow-hidden rounded-2xl border border-line">
-            {product.ingredients.map((ing, i) => (
-              <li
-                key={i}
-                className="border-t border-line bg-cream px-4 py-3.5 text-sm leading-relaxed text-ink first:border-t-0"
-              >
-                {ing}
-              </li>
-            ))}
-            <li className="border-t border-line bg-sand/60 px-4 py-3 text-sm text-muted">
-              총 내용량 · {product.servings}
-            </li>
-          </ul>
-          <p className="mt-3 text-xs leading-relaxed text-muted">
-            원료의 종류와 함량(mg)을 있는 그대로 공개합니다.
-          </p>
-        </div>
-      </section>
+      {/* 상품 상세(상세페이지 스토리) */}
+      <ProductStory product={product} />
 
       {/* 리뷰 */}
       <section className="mt-16">
