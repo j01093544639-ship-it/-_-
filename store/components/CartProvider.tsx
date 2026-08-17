@@ -11,8 +11,8 @@ import {
 import type { CartLine } from "@/lib/types";
 
 const KEY = "csh-cart-v1";
-const lineKey = (l: Pick<CartLine, "productId" | "orderType">) =>
-  `${l.productId}:${l.orderType}`;
+const lineKey = (l: Pick<CartLine, "productId" | "orderType" | "bottles">) =>
+  `${l.productId}:${l.orderType}:${l.bottles}`;
 
 interface CartContextValue {
   items: CartLine[];
@@ -20,8 +20,17 @@ interface CartContextValue {
   subtotal: number;
   ready: boolean;
   addItem: (line: CartLine) => void;
-  updateQty: (productId: string, orderType: CartLine["orderType"], qty: number) => void;
-  removeItem: (productId: string, orderType: CartLine["orderType"]) => void;
+  updateQty: (
+    productId: string,
+    orderType: CartLine["orderType"],
+    bottles: number,
+    qty: number,
+  ) => void;
+  removeItem: (
+    productId: string,
+    orderType: CartLine["orderType"],
+    bottles: number,
+  ) => void;
   clear: () => void;
 }
 
@@ -65,21 +74,28 @@ export function CartProvider({ children }: { children: ReactNode }) {
     const updateQty = (
       productId: string,
       orderType: CartLine["orderType"],
+      bottles: number,
       qty: number,
     ) =>
       setItems((prev) =>
         prev
           .map((p) =>
-            lineKey(p) === lineKey({ productId, orderType })
+            lineKey(p) === lineKey({ productId, orderType, bottles })
               ? { ...p, qty: Math.max(1, qty) }
               : p,
           )
           .filter((p) => p.qty > 0),
       );
 
-    const removeItem = (productId: string, orderType: CartLine["orderType"]) =>
+    const removeItem = (
+      productId: string,
+      orderType: CartLine["orderType"],
+      bottles: number,
+    ) =>
       setItems((prev) =>
-        prev.filter((p) => lineKey(p) !== lineKey({ productId, orderType })),
+        prev.filter(
+          (p) => lineKey(p) !== lineKey({ productId, orderType, bottles }),
+        ),
       );
 
     const clear = () => setItems([]);

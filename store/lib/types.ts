@@ -57,9 +57,10 @@ export interface CartLine {
   productId: string;
   slug: string;
   name: string;
-  price: number; // 실제 결제 단가(정기 할인 반영)
-  listPrice: number; // 정가(단건가)
-  qty: number;
+  price: number; // 선택 묶음의 실제 결제가(정기 할인 반영)
+  listPrice: number; // 낱개 기준가(통수 × 1통가) — 절약액 표시용
+  qty: number; // 묶음 개수
+  bottles: number; // 묶음 구성(1/2/3/5통)
   image: string;
   orderType: OrderType;
   intervalDays?: number;

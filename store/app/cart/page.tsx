@@ -41,7 +41,7 @@ export default function CartPage() {
         <ul className="space-y-4">
           {items.map((line) => (
             <li
-              key={`${line.productId}:${line.orderType}`}
+              key={`${line.productId}:${line.orderType}:${line.bottles}`}
               className="flex gap-4 rounded-2xl border border-line bg-cream p-4"
             >
               <Link
@@ -60,6 +60,7 @@ export default function CartPage() {
                     >
                       {line.name}
                     </Link>
+                    <p className="mt-0.5 text-xs text-muted">{line.bottles}통 구성</p>
                     {line.orderType === "subscription" && (
                       <p className="mt-0.5 inline-flex items-center gap-1 text-xs text-sage-dark">
                         <RefreshCw size={11} /> 정기배송 {line.intervalDays}일 주기
@@ -68,7 +69,7 @@ export default function CartPage() {
                   </div>
                   <button
                     type="button"
-                    onClick={() => removeItem(line.productId, line.orderType)}
+                    onClick={() => removeItem(line.productId, line.orderType, line.bottles)}
                     className="grid h-8 w-8 place-items-center rounded-full text-muted hover:bg-clay-tint hover:text-clay"
                     aria-label="삭제"
                   >
@@ -80,7 +81,9 @@ export default function CartPage() {
                   <div className="flex items-center gap-2.5 rounded-full border border-line px-2 py-1">
                     <button
                       type="button"
-                      onClick={() => updateQty(line.productId, line.orderType, line.qty - 1)}
+                      onClick={() =>
+                        updateQty(line.productId, line.orderType, line.bottles, line.qty - 1)
+                      }
                       className="grid h-6 w-6 place-items-center rounded-full hover:bg-sage-tint disabled:opacity-40"
                       disabled={line.qty <= 1}
                       aria-label="수량 감소"
@@ -90,7 +93,9 @@ export default function CartPage() {
                     <span className="w-5 text-center text-sm font-semibold">{line.qty}</span>
                     <button
                       type="button"
-                      onClick={() => updateQty(line.productId, line.orderType, line.qty + 1)}
+                      onClick={() =>
+                        updateQty(line.productId, line.orderType, line.bottles, line.qty + 1)
+                      }
                       className="grid h-6 w-6 place-items-center rounded-full hover:bg-sage-tint"
                       aria-label="수량 증가"
                     >

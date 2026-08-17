@@ -94,7 +94,7 @@ export function Footer() {
           </p>
           <p className="mt-3 text-muted/80">
             본 사이트의 상품은 일반 건강식품이며, 특정 질병의 예방·치료 효과나 의약품의 대체
-            효능을 표방하지 않습니다. 표시된 사업자 정보와 가격은 예시이며 실제 정보로 교체가
+            효능을 표방하지 않습니다. 표시된 사업자 정보는 예시이며 실제 정보로 교체가
             필요합니다.
           </p>
           <p className="mt-4 text-muted/70">© 2026 참신한하루. All rights reserved.</p>

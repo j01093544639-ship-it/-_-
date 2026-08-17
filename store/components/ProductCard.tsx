@@ -1,8 +1,9 @@
 import Link from "next/link";
-import { RefreshCw } from "lucide-react";
 import type { Product } from "@/lib/types";
+import { won } from "@/lib/format";
+import { LOWEST_PER_BOTTLE } from "@/lib/pricing";
 import { ProductImage } from "./ProductImage";
-import { Badge, StarRating, Price } from "./ui";
+import { Badge, StarRating } from "./ui";
 
 export function ProductCard({ product }: { product: Product }) {
   return (
@@ -31,13 +32,13 @@ export function ProductCard({ product }: { product: Product }) {
         <h3 className="text-[15px] font-semibold leading-snug text-ink">{product.name}</h3>
         <p className="line-clamp-2 text-sm text-muted">{product.summary}</p>
         <div className="mt-auto pt-2">
-          <Price price={product.price} salePrice={product.salePrice} />
-          {product.subscription.enabled && (
-            <p className="mt-1.5 inline-flex items-center gap-1 text-xs text-sage-dark">
-              <RefreshCw size={12} strokeWidth={2} />
-              정기배송 {product.subscription.discountPercent}% 추가 할인
-            </p>
-          )}
+          <p className="flex items-baseline gap-1">
+            <span className="text-lg font-bold text-ink">{won(product.price)}</span>
+            <span className="text-xs text-muted">/ 1통</span>
+          </p>
+          <p className="mt-1 text-xs text-sage-dark">
+            묶음 구매 시 통당 최저 {won(LOWEST_PER_BOTTLE)}
+          </p>
         </div>
       </div>
     </Link>
