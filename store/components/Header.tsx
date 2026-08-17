@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ShoppingBag, Menu, X, Leaf } from "lucide-react";
 import { useCart } from "./CartProvider";
+import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 
 const NAV = [
   { href: "/products", label: "전체 상품" },
@@ -14,6 +15,30 @@ const NAV = [
 export function Header() {
   const { count, ready } = useCart();
   const [open, setOpen] = useState(false);
+  const [email, setEmail] = useState<string | null>(null);
+
+  useEffect(() => {
+    const supabase = createSupabaseBrowserClient();
+    if (!supabase) return;
+    let active = true;
+    supabase.auth.getUser().then(({ data }) => {
+      if (active) setEmail(data.user?.email ?? null);
+    });
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+      setEmail(session?.user?.email ?? null);
+    });
+    return () => {
+      active = false;
+      sub.subscription.unsubscribe();
+    };
+  }, []);
+
+  const logout = async () => {
+    const supabase = createSupabaseBrowserClient();
+    if (supabase) await supabase.auth.signOut();
+    setEmail(null);
+    window.location.href = "/";
+  };
 
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-cream/85 backdrop-blur-md">
@@ -40,12 +65,22 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-1">
-          <Link
-            href="/login"
-            className="hidden rounded-full px-3 py-2 text-sm text-muted transition-colors hover:text-sage sm:block"
-          >
-            로그인
-          </Link>
+          {email ? (
+            <button
+              type="button"
+              onClick={logout}
+              className="hidden rounded-full px-3 py-2 text-sm text-muted transition-colors hover:text-sage sm:block"
+            >
+              로그아웃
+            </button>
+          ) : (
+            <Link
+              href="/login"
+              className="hidden rounded-full px-3 py-2 text-sm text-muted transition-colors hover:text-sage sm:block"
+            >
+              로그인
+            </Link>
+          )}
           <Link
             href="/cart"
             className="relative grid h-10 w-10 place-items-center rounded-full text-ink transition-colors hover:bg-sage-tint"
@@ -72,7 +107,7 @@ export function Header() {
 
       {open && (
         <nav className="border-t border-line bg-cream px-5 py-3 md:hidden">
-          {NAV.concat({ href: "/login", label: "로그인" }).map((n) => (
+          {NAV.map((n) => (
             <Link
               key={n.label}
               href={n.href}
@@ -82,6 +117,26 @@ export function Header() {
               {n.label}
             </Link>
           ))}
+          {email ? (
+            <button
+              type="button"
+              onClick={() => {
+                setOpen(false);
+                logout();
+              }}
+              className="block w-full py-2.5 text-left text-[15px] text-ink"
+            >
+              로그아웃
+            </button>
+          ) : (
+            <Link
+              href="/login"
+              onClick={() => setOpen(false)}
+              className="block py-2.5 text-[15px] text-ink"
+            >
+              로그인
+            </Link>
+          )}
         </nav>
       )}
     </header>
