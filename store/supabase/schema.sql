@@ -1,6 +1,7 @@
--- 온담 스토어 · Supabase 스키마 (MVP)
+-- 참신한하루 스토어 · Supabase 스키마 (MVP)
 -- Supabase SQL Editor에 그대로 붙여 실행하세요.
 -- 원칙: 모든 테이블 RLS 활성화 후 필요한 정책만 추가(기본 deny).
+-- ※ 상품은 앱의 lib/products.ts 시드로도 동작합니다. 이 스키마는 운영 전환용입니다.
 
 -- ─────────────────────────────────────────────
 -- 1. 상품
@@ -9,16 +10,19 @@ create table if not exists public.products (
   id text primary key,
   slug text unique not null,
   name text not null,
+  eng_name text,
   brand text not null,
   summary text,
-  description jsonb default '[]'::jsonb,
   price integer not null,
   sale_price integer,
   category text not null,
   badges jsonb default '[]'::jsonb,
   accent text,
+  image text,
   servings text,
   ingredients jsonb default '[]'::jsonb,
+  features jsonb default '[]'::jsonb,
+  recommend jsonb default '[]'::jsonb,
   intake text,
   origin text,
   caution text,
@@ -155,15 +159,26 @@ create policy "subscriptions read own"
 -- ─────────────────────────────────────────────
 -- 5. 상품 시드 (데모용)
 -- ─────────────────────────────────────────────
+-- ※ 가격(price/sale_price)은 예시값입니다. 실제 판매가로 교체하세요.
 insert into public.products
-  (id, slug, name, brand, summary, price, sale_price, category, accent, servings,
+  (id, slug, name, brand, summary, price, sale_price, category, accent, image, servings,
    stock, rating, review_count, subscription_enabled, subscription_discount,
    subscription_interval_days, is_best, is_new)
 values
-  ('p-lacto-01','daily-lacto-19','데일리 락토 19종','온담','19종 복합 유산균',39000,32900,'유산균','#6f8f6a','30포',120,4.8,214,true,15,30,true,false),
-  ('p-omega-01','clear-omega3-rtg','클리어 오메가3 rTG','온담','고순도 rTG 오메가3',34000,null,'오메가3','#c98a3a','60캡슐',86,4.7,158,true,12,30,true,false),
-  ('p-vitc-01','wholefood-vitamin-c','홀푸드 비타민C 1000','온담','자연유래 비타민C',24000,19900,'비타민','#d0763f','90정',200,4.6,302,true,15,60,false,true),
-  ('p-redginseng-01','fermented-red-ginseng','발효 홍삼 진','온담','발효 6년근 홍삼',59000,49000,'발효홍삼','#b0503a','30포',54,4.9,121,true,10,30,true,false),
-  ('p-protein-01','plant-protein-shake','식물성 단백 셰이크','온담','완두·현미 식물성 단백',42000,null,'단백질','#8a7b4f','750g',73,4.5,96,true,12,30,false,true),
-  ('p-sleep-01','calm-night-magnesium','카밤 나이트 마그네슘','온담','마그네슘·테아닌',29000,null,'수면·이완','#6d6f96','60정',68,4.7,143,true,15,30,false,true)
+  ('daily-dietary-fiber','daily-dietary-fiber','데일리 식이섬유 정','참신한하루','치커리 식이섬유 고함량',24900,21900,'장건강','#6f8f6a','/products/product-01.jpg','600mg × 120정',180,4.8,214,true,15,30,true,false),
+  ('mugunghwa-fit-on','mugunghwa-fit-on','무궁화추출물 핏온 정','참신한하루','무궁화 추출 복합분말',29900,null,'다이어트','#cf7f43','/products/product-02.jpg','600mg × 60정',90,4.6,78,true,12,30,false,false),
+  ('triella-collagen-biotin','triella-collagen-biotin','트리엘라 어린콜라겐 펩타이드 비오틴 플러스','참신한하루','초저분자 피쉬 콜라겐 + 비오틴',42000,36900,'뷰티','#b56a86','/products/product-03.jpg','450mg × 120정',140,4.9,326,true,10,30,true,false),
+  ('paradise-grain-burning','paradise-grain-burning','파라다이스 그레인 버닝 원데이즈 정','참신한하루','파라다이스 그레인 추출분말',32900,null,'다이어트','#cf7f43','/products/product-04.jpg','600mg × 120정',76,4.6,64,true,12,30,false,false),
+  ('fermented-oyster-kids','fermented-oyster-kids','발효굴 추출분말 & 유산균 정','참신한하루','발효굴 + 22종 유산균',27900,null,'키즈','#6d93b0','/products/product-05.jpg','600mg × 60정',88,4.8,152,true,12,30,false,false),
+  ('alpha-cd-one-days','alpha-cd-one-days','알파CD 알파시클로덱스트린 원데이즈','참신한하루','알파시클로덱스트린 식이섬유',29900,null,'다이어트','#cf7f43','/products/product-06.jpg','450mg × 120정',110,4.7,71,true,12,30,false,true),
+  ('plant-melatonin-tart-cherry','plant-melatonin-tart-cherry','식물성 멜라토닌 피스타치오 타트체리 정','참신한하루','식물성 멜라토닌 + 타트체리',28900,null,'컨디션','#8a7f53','/products/product-07.jpg','600mg × 60정',64,4.7,118,true,15,30,false,true),
+  ('green-acerola-vitamin-c','green-acerola-vitamin-c','그린 아세로라 유래 비타민C 원데이즈','참신한하루','아세로라 유래 비타민C',21900,null,'비타민·면역','#d3a83c','/products/product-08.jpg','450mg × 120정',200,4.7,205,true,15,60,false,false),
+  ('khorasan-grain-enzyme','khorasan-grain-enzyme','프리미엄 호라산밀 곡물효소 정','참신한하루','카무트 + 식이섬유 + 곡물효소',34900,null,'장건강','#6f8f6a','/products/product-09.jpg','1,000mg × 60정',82,4.7,96,true,12,30,false,true),
+  ('papa-flora-ginger','papa-flora-ginger','파파 플로라 생강추출물 정','참신한하루','생강 추출분말 + 흑마늘',25900,null,'컨디션','#8a7f53','/products/product-10.jpg','600mg × 60정',95,4.8,133,true,12,30,false,false),
+  ('lemon-vitamin-c','lemon-vitamin-c','레몬즙 비타민C 정','참신한하루','레몬 과즙분말 + 비타민C',18900,null,'비타민·면역','#d3a83c','/products/product-11.jpg','600mg × 60정',160,4.6,88,true,15,30,false,false),
+  ('liposomal-glutathione','liposomal-glutathione','리포좀 글루타치온 정','참신한하루','리포좀 글루타치온 + 비타민C',39000,34900,'뷰티','#b56a86','/products/product-12.jpg','600mg × 60정',120,4.9,241,true,10,30,true,false),
+  ('eggshell-gujeolcho','eggshell-gujeolcho','난각막 구아검 가수분해물 구절초 플러스','참신한하루','난각막 + 구절초 + 구아검',33900,null,'컨디션','#8a7f53','/products/product-13.jpg','450mg × 120정',70,4.7,84,true,12,30,false,false),
+  ('acv-probiotics','acv-probiotics','애플사이다비니거 사과초모 유산균 정','참신한하루','유기농 사과초모 + 22종 유산균',26900,23900,'장건강','#6f8f6a','/products/product-14.jpg','600mg × 60정',130,4.8,176,true,12,30,true,false),
+  ('saururus-liriope','saururus-liriope','삼백초 맥문동 정','참신한하루','삼백초 + 맥문동',24900,null,'컨디션','#8a7f53','/products/product-15.jpg','600mg × 60정',85,4.6,57,true,12,30,false,false),
+  ('albumin-signature','albumin-signature','알부민 정','참신한하루','알부민 아미노산 복합물 (시그니처)',31900,null,'컨디션','#8a7f53','/products/product-16.jpg','600mg × 120정',108,4.8,149,true,12,30,true,false)
 on conflict (id) do nothing;

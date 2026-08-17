@@ -5,7 +5,7 @@ import { ProductCard } from "@/components/ProductCard";
 
 export const metadata: Metadata = {
   title: "전체 상품",
-  description: "온담의 건강식품 전체 상품 — 유산균, 오메가3, 비타민, 발효홍삼, 단백질, 수면·이완.",
+  description: "참신한하루의 건강식품 전체 상품 — 다이어트·장건강·비타민·면역·뷰티·컨디션·키즈.",
 };
 
 const SORTS = [
@@ -59,7 +59,7 @@ export default async function ProductsPage({
       <header className="reveal">
         <h1 className="font-display text-4xl font-extrabold text-ink">전체 상품</h1>
         <p className="mt-3 text-muted">
-          매일 챙기기 좋은 온담의 건강식품을 만나보세요. 총 {getAllProducts().length}종.
+          정직한 원료로 채우는 참신한하루의 건강식품을 만나보세요. 총 {getAllProducts().length}종.
         </p>
       </header>
 

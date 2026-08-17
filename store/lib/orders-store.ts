@@ -5,7 +5,7 @@ import type { CartLine, OrderType } from "./types";
  * Supabase가 연결되면 서버 `orders` 테이블이 원본이 되지만,
  * 데모/비회원 흐름에서도 주문내역을 볼 수 있도록 브라우저에도 스냅샷을 남긴다.
  */
-const KEY = "ondam-orders-v1";
+const KEY = "csh-orders-v1";
 
 export interface LocalOrder {
   orderNumber: string;

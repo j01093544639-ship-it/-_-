@@ -5,14 +5,13 @@ import { useRouter } from "next/navigation";
 import { Minus, Plus, ShoppingBag, RefreshCw, Check } from "lucide-react";
 import { useCart } from "./CartProvider";
 import { won, subscriptionPrice } from "@/lib/format";
-import type { Category, OrderType } from "@/lib/types";
+import type { OrderType } from "@/lib/types";
 
 interface Props {
   id: string;
   slug: string;
   name: string;
-  accent: string;
-  category: Category;
+  image: string;
   price: number;
   salePrice?: number;
   stock: number;
@@ -43,8 +42,7 @@ export function PurchaseOptions(props: Props) {
     price: unit,
     listPrice: props.price,
     qty,
-    accent: props.accent,
-    category: props.category,
+    image: props.image,
     orderType,
     intervalDays: orderType === "subscription" ? props.intervalDays : undefined,
   });

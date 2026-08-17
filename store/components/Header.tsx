@@ -18,12 +18,12 @@ export function Header() {
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-cream/85 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-5">
-        <Link href="/" className="flex items-center gap-2" aria-label="온담 홈">
+        <Link href="/" className="flex items-center gap-2" aria-label="참신한하루 홈">
           <span className="grid h-8 w-8 place-items-center rounded-full bg-sage text-cream">
             <Leaf size={17} strokeWidth={2.2} />
           </span>
-          <span className="font-display text-xl font-extrabold tracking-tight text-ink">
-            온담
+          <span className="font-display text-lg font-extrabold tracking-tight text-ink sm:text-xl">
+            참신한하루
           </span>
         </Link>
 

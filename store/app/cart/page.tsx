@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Minus, Plus, Trash2, RefreshCw, ShoppingBag, ArrowRight } from "lucide-react";
 import { useCart } from "@/components/CartProvider";
-import { ProductArt } from "@/components/ProductArt";
+import { ProductImage } from "@/components/ProductImage";
 import { won, shippingFee, FREE_SHIPPING_THRESHOLD } from "@/lib/format";
 
 export default function CartPage() {
@@ -46,14 +46,9 @@ export default function CartPage() {
             >
               <Link
                 href={`/products/${line.slug}`}
-                className="h-24 w-24 shrink-0 overflow-hidden rounded-xl border border-line"
+                className="relative h-24 w-24 shrink-0 overflow-hidden rounded-xl border border-line bg-sand"
               >
-                <ProductArt
-                  accent={line.accent}
-                  category={line.category}
-                  label={line.name}
-                  className="h-full w-full"
-                />
+                <ProductImage src={line.image} alt={line.name} sizes="96px" />
               </Link>
 
               <div className="flex flex-1 flex-col">

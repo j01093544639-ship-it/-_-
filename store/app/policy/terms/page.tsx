@@ -8,7 +8,7 @@ export default function TermsPage() {
     <LegalDoc title="이용약관" updated="2026년 8월 1일">
       <Section no={1} title="목적">
         <p>
-          본 약관은 온담(이하 &ldquo;회사&rdquo;)이 운영하는 온라인 쇼핑몰에서 제공하는
+          본 약관은 참신한하루(이하 &ldquo;회사&rdquo;)가 운영하는 온라인 쇼핑몰에서 제공하는
           서비스의 이용조건 및 절차, 회사와 이용자의 권리·의무 및 책임사항을 규정함을
           목적으로 합니다.
         </p>

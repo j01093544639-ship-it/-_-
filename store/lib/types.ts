@@ -1,44 +1,41 @@
 export type Category =
-  | "유산균"
-  | "오메가3"
-  | "비타민"
-  | "발효홍삼"
-  | "단백질"
-  | "수면·이완";
-
-export interface Ingredient {
-  name: string;
-  amount: string;
-}
+  | "다이어트"
+  | "장건강"
+  | "비타민·면역"
+  | "뷰티"
+  | "컨디션"
+  | "키즈";
 
 export interface Product {
   id: string;
   slug: string;
   name: string;
+  engName: string;
   brand: string;
   summary: string;
-  description: string[];
+  category: Category;
   price: number;
   salePrice?: number;
-  category: Category;
-  badges: string[];
-  /** 화면 표시용 대표 색상(온-브랜드 아트에 사용) */
+  /** 카테고리 톤 컬러(배지·태그에 사용) */
   accent: string;
+  /** /products/xxx.jpg (public 기준 경로) */
+  image: string;
   servings: string;
-  ingredients: Ingredient[];
+  ingredients: string[];
+  features: string[];
+  recommend: string[];
   intake: string;
   origin: string;
   caution: string;
   stock: number;
   rating: number;
   reviewCount: number;
-  /** 정기배송 지원 여부 및 할인율(%) / 주기(일) */
   subscription: {
     enabled: boolean;
     discountPercent: number;
     intervalDays: number;
   };
-  tags: string[];
+  badges: string[];
   isBest?: boolean;
   isNew?: boolean;
 }
@@ -47,7 +44,9 @@ export interface Review {
   id: string;
   productId: string;
   author: string;
+  product: string;
   rating: number;
+  repurchase: boolean;
   content: string;
   createdAt: string;
 }
@@ -61,8 +60,7 @@ export interface CartLine {
   price: number; // 실제 결제 단가(정기 할인 반영)
   listPrice: number; // 정가(단건가)
   qty: number;
-  accent: string;
-  category: Category;
+  image: string;
   orderType: OrderType;
   intervalDays?: number;
 }

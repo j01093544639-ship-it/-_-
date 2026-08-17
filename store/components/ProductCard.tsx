@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { RefreshCw } from "lucide-react";
 import type { Product } from "@/lib/types";
-import { ProductArt } from "./ProductArt";
+import { ProductImage } from "./ProductImage";
 import { Badge, StarRating, Price } from "./ui";
 
 export function ProductCard({ product }: { product: Product }) {
@@ -10,12 +10,11 @@ export function ProductCard({ product }: { product: Product }) {
       href={`/products/${product.slug}`}
       className="group flex flex-col overflow-hidden rounded-2xl border border-line bg-cream transition-all hover:-translate-y-1 hover:border-sage-light hover:shadow-[0_18px_40px_-24px_rgba(69,78,59,0.45)]"
     >
-      <div className="relative aspect-square overflow-hidden">
-        <ProductArt
-          accent={product.accent}
-          category={product.category}
-          label={product.name}
-          className="h-full w-full transition-transform duration-500 group-hover:scale-[1.04]"
+      <div className="relative aspect-square overflow-hidden bg-sand">
+        <ProductImage
+          src={product.image}
+          alt={product.name}
+          className="transition-transform duration-500 group-hover:scale-[1.04]"
         />
         <div className="absolute left-3 top-3 flex flex-wrap gap-1.5">
           {product.isBest && <Badge tone="clay">BEST</Badge>}

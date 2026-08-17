@@ -1,20 +1,13 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import {
-  ChevronRight,
-  Leaf,
-  Info,
-  Truck,
-  ShieldCheck,
-  Star,
-} from "lucide-react";
+import { ChevronRight, Check, Info, Truck, ShieldCheck, Star } from "lucide-react";
 import {
   getAllProducts,
   getProductBySlug,
   getReviewsByProduct,
 } from "@/lib/products";
-import { ProductArt } from "@/components/ProductArt";
+import { ProductImage } from "@/components/ProductImage";
 import { PurchaseOptions } from "@/components/PurchaseOptions";
 import { ReviewForm } from "@/components/ReviewForm";
 import { Badge, StarRating } from "@/components/ui";
@@ -35,7 +28,11 @@ export async function generateMetadata({
   return {
     title: product.name,
     description: product.summary,
-    openGraph: { title: product.name, description: product.summary },
+    openGraph: {
+      title: product.name,
+      description: product.summary,
+      images: [product.image],
+    },
   };
 }
 
@@ -88,7 +85,10 @@ export default async function ProductDetailPage({
           전체 상품
         </Link>
         <ChevronRight size={14} />
-        <Link href={`/products?category=${encodeURIComponent(product.category)}`} className="hover:text-sage">
+        <Link
+          href={`/products?category=${encodeURIComponent(product.category)}`}
+          className="hover:text-sage"
+        >
           {product.category}
         </Link>
         <ChevronRight size={14} />
@@ -98,12 +98,12 @@ export default async function ProductDetailPage({
       {/* Main */}
       <div className="mt-6 grid gap-10 lg:grid-cols-2">
         <div className="reveal">
-          <div className="overflow-hidden rounded-3xl border border-line bg-cream">
-            <ProductArt
-              accent={product.accent}
-              category={product.category}
-              label={product.name}
-              className="aspect-square w-full"
+          <div className="relative aspect-square overflow-hidden rounded-3xl border border-line bg-sand">
+            <ProductImage
+              src={product.image}
+              alt={product.name}
+              priority
+              sizes="(max-width: 1024px) 100vw, 520px"
             />
           </div>
           <div className="mt-4 flex flex-wrap gap-2">
@@ -120,7 +120,8 @@ export default async function ProductDetailPage({
           <h1 className="mt-2 font-display text-3xl font-extrabold leading-snug text-ink">
             {product.name}
           </h1>
-          <div className="mt-3 flex items-center gap-3">
+          <p className="mt-1 text-sm text-muted">{product.engName}</p>
+          <div className="mt-3">
             <StarRating rating={product.rating} count={product.reviewCount} />
           </div>
           <p className="mt-4 leading-relaxed text-muted">{product.summary}</p>
@@ -131,8 +132,7 @@ export default async function ProductDetailPage({
               id={product.id}
               slug={product.slug}
               name={product.name}
-              accent={product.accent}
-              category={product.category}
+              image={product.image}
               price={product.price}
               salePrice={product.salePrice}
               stock={product.stock}
@@ -148,23 +148,37 @@ export default async function ProductDetailPage({
               주문 시 당일 출고
             </li>
             <li className="flex items-center gap-2.5">
-              <ShieldCheck size={16} className="text-sage" /> 미개봉 상품 7일 이내 청약철회
-              가능
-            </li>
-            <li className="flex items-center gap-2.5">
-              <Leaf size={16} className="text-sage" /> 인공 향료·색소를 넣지 않은 담백한 원료
+              <ShieldCheck size={16} className="text-sage" /> HACCP 안전관리인증 시설 제조 ·
+              미개봉 7일 이내 청약철회
             </li>
           </ul>
         </div>
       </div>
 
-      {/* 상세 설명 */}
+      {/* 특징 · 추천 · 성분 */}
       <section className="mt-16 grid gap-10 lg:grid-cols-[1.6fr_1fr]">
         <div>
-          <h2 className="font-display text-2xl font-extrabold text-ink">상세 설명</h2>
-          <div className="mt-4 space-y-3 leading-relaxed text-muted">
-            {product.description.map((line, i) => (
-              <p key={i}>{line}</p>
+          <h2 className="font-display text-2xl font-extrabold text-ink">제품 특징</h2>
+          <ul className="mt-4 space-y-3">
+            {product.features.map((f, i) => (
+              <li key={i} className="flex gap-3 leading-relaxed text-muted">
+                <Check size={18} className="mt-0.5 shrink-0 text-sage" />
+                <span>{f}</span>
+              </li>
+            ))}
+          </ul>
+
+          <h2 className="mt-10 font-display text-2xl font-extrabold text-ink">
+            이런 분께 추천해요
+          </h2>
+          <div className="mt-4 flex flex-wrap gap-2.5">
+            {product.recommend.map((r) => (
+              <span
+                key={r}
+                className="rounded-full border border-line bg-cream px-4 py-2 text-sm text-ink"
+              >
+                {r}
+              </span>
             ))}
           </div>
 
@@ -181,37 +195,32 @@ export default async function ProductDetailPage({
               <p className="font-semibold text-ink">섭취 시 주의사항</p>
               <p className="mt-1">{product.caution}</p>
               <p className="mt-2 text-muted">
-                본 제품은 일반 식품이며, 질병의 예방·치료를 위한 의약품이 아닙니다.
+                본 제품은 일반 건강식품이며, 특정 질병의 예방·치료 효과나 의약품의 대체
+                효능을 표방하지 않습니다.
               </p>
             </div>
           </div>
         </div>
 
-        {/* 성분·함량 */}
+        {/* 원료 및 함량 */}
         <div>
-          <h2 className="font-display text-2xl font-extrabold text-ink">성분 · 함량</h2>
-          <div className="mt-4 overflow-hidden rounded-2xl border border-line">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="bg-sand/60 text-left text-muted">
-                  <th className="px-4 py-3 font-medium">원료</th>
-                  <th className="px-4 py-3 text-right font-medium">함량</th>
-                </tr>
-              </thead>
-              <tbody>
-                {product.ingredients.map((ing) => (
-                  <tr key={ing.name} className="border-t border-line">
-                    <td className="px-4 py-3 text-ink">{ing.name}</td>
-                    <td className="px-4 py-3 text-right text-muted">{ing.amount}</td>
-                  </tr>
-                ))}
-                <tr className="border-t border-line">
-                  <td className="px-4 py-3 text-ink">제공량</td>
-                  <td className="px-4 py-3 text-right text-muted">{product.servings}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+          <h2 className="font-display text-2xl font-extrabold text-ink">원료 및 함량</h2>
+          <ul className="mt-4 overflow-hidden rounded-2xl border border-line">
+            {product.ingredients.map((ing, i) => (
+              <li
+                key={i}
+                className="border-t border-line bg-cream px-4 py-3.5 text-sm leading-relaxed text-ink first:border-t-0"
+              >
+                {ing}
+              </li>
+            ))}
+            <li className="border-t border-line bg-sand/60 px-4 py-3 text-sm text-muted">
+              총 내용량 · {product.servings}
+            </li>
+          </ul>
+          <p className="mt-3 text-xs leading-relaxed text-muted">
+            원료의 종류와 함량(mg)을 있는 그대로 공개합니다.
+          </p>
         </div>
       </section>
 
@@ -234,7 +243,14 @@ export default async function ProductDetailPage({
             {reviews.map((r) => (
               <li key={r.id} className="rounded-2xl border border-line bg-cream p-5">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-semibold text-ink">{r.author}</span>
+                  <span className="text-sm font-semibold text-ink">
+                    {r.author}
+                    {r.repurchase && (
+                      <span className="ml-2 rounded-full bg-sage-tint px-2 py-0.5 text-[11px] font-semibold text-sage-dark">
+                        재구매
+                      </span>
+                    )}
+                  </span>
                   <span className="text-xs text-muted">{formatDate(r.createdAt)}</span>
                 </div>
                 <div className="mt-1.5 flex gap-0.5">
@@ -266,14 +282,15 @@ export default async function ProductDetailPage({
                 href={`/products/${p.slug}`}
                 className="group overflow-hidden rounded-2xl border border-line bg-cream transition-all hover:-translate-y-1 hover:border-sage-light"
               >
-                <ProductArt
-                  accent={p.accent}
-                  category={p.category}
-                  label={p.name}
-                  className="aspect-square w-full transition-transform duration-500 group-hover:scale-105"
-                />
+                <div className="relative aspect-square overflow-hidden bg-sand">
+                  <ProductImage
+                    src={p.image}
+                    alt={p.name}
+                    className="transition-transform duration-500 group-hover:scale-105"
+                  />
+                </div>
                 <div className="p-4">
-                  <h3 className="text-sm font-semibold text-ink">{p.name}</h3>
+                  <h3 className="line-clamp-2 text-sm font-semibold text-ink">{p.name}</h3>
                   <p className="mt-1 text-sm font-bold text-ink">
                     {won(p.salePrice ?? p.price)}
                   </p>

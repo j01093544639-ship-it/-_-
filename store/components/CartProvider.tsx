@@ -10,7 +10,7 @@ import {
 } from "react";
 import type { CartLine } from "@/lib/types";
 
-const KEY = "ondam-cart-v1";
+const KEY = "csh-cart-v1";
 const lineKey = (l: Pick<CartLine, "productId" | "orderType">) =>
   `${l.productId}:${l.orderType}`;
 

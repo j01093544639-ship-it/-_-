@@ -34,7 +34,7 @@ export default function LoginPage() {
       <span className="grid h-14 w-14 place-items-center rounded-full bg-sage text-cream">
         <Leaf size={24} strokeWidth={2.1} />
       </span>
-      <h1 className="mt-6 font-display text-3xl font-extrabold text-ink">온담 로그인</h1>
+      <h1 className="mt-6 font-display text-3xl font-extrabold text-ink">참신한하루 로그인</h1>
       <p className="mt-2 text-muted">
         카카오로 간편하게 시작하고 주문·정기배송을 한 곳에서 관리하세요.
       </p>

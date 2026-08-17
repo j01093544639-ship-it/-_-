@@ -118,7 +118,7 @@ export function ConfirmPayment({
         <h1 className="mt-5 font-display text-3xl font-extrabold text-ink">
           주문이 완료되었어요
         </h1>
-        <p className="mt-2 text-muted">온담을 선택해주셔서 감사합니다.</p>
+        <p className="mt-2 text-muted">참신한하루를 선택해주셔서 감사합니다.</p>
       </div>
 
       <div className="mt-8 rounded-2xl border border-line bg-cream p-6">
