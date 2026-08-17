@@ -48,7 +48,8 @@ npm run dev                        # http://localhost:3000
 1. 가격 조정이 필요하면 `lib/pricing.ts`의 `BUNDLE_TIERS`에서 수정(전 제품 공통)
 2. Footer·정책 페이지의 **사업자 정보/통신판매업 신고번호**를 실제 값으로 교체
 3. 토스 **라이브 키**로 교체(`NEXT_PUBLIC_TOSS_CLIENT_KEY`, `TOSS_SECRET_KEY`)
-4. (선택) `supabase/schema.sql` 실행 + 환경변수 입력 + 카카오 Provider 연결, `CRON_SECRET` 설정
+4. (선택) `supabase/schema.sql` 실행 + 환경변수 입력 + **카카오·구글 로그인 Provider 연결**, `CRON_SECRET` 설정
+   - 로그인 버튼(카카오·구글)은 이미 준비돼 있습니다(`app/login/page.tsx`). Supabase Authentication → Providers에서 각 Provider를 켜고 키를 입력하면 바로 동작합니다.
 
 ## 문의 채널(브랜드 기존)
 - 카카오톡 문의: https://open.kakao.com/o/sUHBXsGi
