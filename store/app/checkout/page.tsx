@@ -66,8 +66,10 @@ export default function CheckoutPage() {
       return setError("올바른 휴대폰 번호를 입력해주세요.");
     if (!form.address.trim()) return setError("배송지 주소를 입력해주세요.");
 
-    const clientKey = process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY;
-    if (!clientKey) return setError("결제 설정이 필요합니다. (NEXT_PUBLIC_TOSS_CLIENT_KEY)");
+    // 토스 공개 테스트 클라이언트 키를 기본값으로 사용(환경변수 없이도 결제창 동작).
+    // 운영 전환 시 Vercel 환경변수 NEXT_PUBLIC_TOSS_CLIENT_KEY에 라이브 키를 등록하면 그 값이 우선한다.
+    const clientKey =
+      process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY || "test_ck_D5GePWvyJnrK0W0k6q8gLzN97Eoq";
 
     setLoading(true);
     const orderId = orderNumber();

@@ -14,10 +14,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "INVALID_PARAMS" }, { status: 400 });
     }
 
-    const secretKey = process.env.TOSS_SECRET_KEY;
-    if (!secretKey) {
-      return NextResponse.json({ error: "TOSS_SECRET_KEY_MISSING" }, { status: 500 });
-    }
+    // 토스 공개 테스트 시크릿 키를 기본값으로 사용(환경변수 없이도 승인 동작).
+    // 운영 전환 시 Vercel 환경변수 TOSS_SECRET_KEY에 라이브 키를 등록하면 그 값이 우선한다.
+    const secretKey =
+      process.env.TOSS_SECRET_KEY || "test_sk_zXLkKEypNArWmo50nX3lmeaxYG5R";
 
     const auth = "Basic " + Buffer.from(secretKey + ":").toString("base64");
     const res = await fetch("https://api.tosspayments.com/v1/payments/confirm", {
