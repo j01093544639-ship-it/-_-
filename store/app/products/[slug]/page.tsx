@@ -133,8 +133,6 @@ export default async function ProductDetailPage({
               slug={product.slug}
               name={product.name}
               image={product.image}
-              price={product.price}
-              salePrice={product.salePrice}
               stock={product.stock}
               intervalDays={product.subscription.intervalDays}
               discountPercent={product.subscription.discountPercent}

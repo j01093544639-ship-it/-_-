@@ -10,7 +10,9 @@ import {
 } from "@/lib/products";
 import { ProductCard } from "@/components/ProductCard";
 import { ProductImage } from "@/components/ProductImage";
-import { StarRating, Price } from "@/components/ui";
+import { StarRating } from "@/components/ui";
+import { won } from "@/lib/format";
+import { LOWEST_PER_BOTTLE } from "@/lib/pricing";
 
 const BENEFITS = [
   {
@@ -156,8 +158,14 @@ export default function HomePage() {
                 <li key={i}>· {f}</li>
               ))}
             </ul>
-            <div className="mt-6 flex items-center gap-4">
-              <Price price={signature.price} salePrice={signature.salePrice} />
+            <div className="mt-6 flex flex-wrap items-center gap-4">
+              <div>
+                <p className="flex items-baseline gap-1">
+                  <span className="text-xl font-bold text-ink">{won(signature.price)}</span>
+                  <span className="text-sm text-muted">/ 1통</span>
+                </p>
+                <p className="text-xs text-sage-dark">묶음 통당 최저 {won(LOWEST_PER_BOTTLE)}</p>
+              </div>
               <Link
                 href={`/products/${signature.slug}`}
                 className="inline-flex items-center gap-1.5 rounded-full bg-sage px-5 py-3 text-sm font-semibold text-cream hover:bg-sage-dark"

@@ -32,10 +32,12 @@ npm run dev                        # http://localhost:3000
 | `/login` | 카카오 로그인 + 비회원 주문 |
 | `/policy/*` | 이용약관 · 개인정보 · 환불 |
 
-## 상품 데이터
+## 상품 데이터 · 가격
 - `lib/products.ts` — 참신한하루 실제 16종(다이어트·장건강·비타민면역·뷰티·컨디션·키즈)
 - 사진: `public/products/product-01~16.jpg` (실제 제품 사진)
-- ⚠️ **가격은 예시값입니다** — 원본 홈페이지에 가격이 없어 임시로 넣었습니다. 실제 판매가로 교체하세요.
+- **가격(전 제품 공통 묶음 정가)**: `lib/pricing.ts`의 `BUNDLE_TIERS`
+  - 1통 24,900 · 2통 37,300 · 3통 49,800 · 5통 74,700원
+  - 정기배송은 위 묶음가에 제품별 할인율을 추가 적용
 
 ## 결제 흐름
 - **단건**: 결제창(`requestPayment`) → `successUrl` → `/api/payments/confirm`(서버 승인)
@@ -43,7 +45,7 @@ npm run dev                        # http://localhost:3000
   (`/api/subscriptions/confirm`) → 정기 결제는 `/api/subscriptions/charge`(Vercel Cron)
 
 ## 운영 전환 체크
-1. `lib/products.ts`의 **가격**을 실제 판매가로 교체
+1. 가격 조정이 필요하면 `lib/pricing.ts`의 `BUNDLE_TIERS`에서 수정(전 제품 공통)
 2. Footer·정책 페이지의 **사업자 정보/통신판매업 신고번호**를 실제 값으로 교체
 3. 토스 **라이브 키**로 교체(`NEXT_PUBLIC_TOSS_CLIENT_KEY`, `TOSS_SECRET_KEY`)
 4. (선택) `supabase/schema.sql` 실행 + 환경변수 입력 + 카카오 Provider 연결, `CRON_SECRET` 설정

@@ -159,7 +159,8 @@ create policy "subscriptions read own"
 -- ─────────────────────────────────────────────
 -- 5. 상품 시드 (데모용)
 -- ─────────────────────────────────────────────
--- ※ 가격(price/sale_price)은 예시값입니다. 실제 판매가로 교체하세요.
+-- ※ 실제 판매가는 앱의 lib/pricing.ts 묶음 정가(1통 24,900 / 2통 37,300 /
+--    3통 49,800 / 5통 74,700)를 사용합니다. 아래 price 컬럼은 참조용 1통가입니다.
 insert into public.products
   (id, slug, name, brand, summary, price, sale_price, category, accent, image, servings,
    stock, rating, review_count, subscription_enabled, subscription_discount,

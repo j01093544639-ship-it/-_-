@@ -1,10 +1,17 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Minus, Plus, ShoppingBag, RefreshCw, Check } from "lucide-react";
+import { ShoppingBag, RefreshCw, Check } from "lucide-react";
 import { useCart } from "./CartProvider";
-import { won, subscriptionPrice } from "@/lib/format";
+import { won } from "@/lib/format";
+import {
+  BUNDLE_TIERS,
+  SINGLE_BOTTLE_PRICE,
+  subBundlePrice,
+  perBottle,
+  bundleSaving,
+} from "@/lib/pricing";
 import type { OrderType } from "@/lib/types";
 
 interface Props {
@@ -12,8 +19,6 @@ interface Props {
   slug: string;
   name: string;
   image: string;
-  price: number;
-  salePrice?: number;
   stock: number;
   intervalDays: number;
   discountPercent: number;
@@ -23,25 +28,26 @@ interface Props {
 export function PurchaseOptions(props: Props) {
   const { addItem } = useCart();
   const router = useRouter();
-  const base = props.salePrice ?? props.price;
   const [orderType, setOrderType] = useState<OrderType>("single");
-  const [qty, setQty] = useState(1);
+  const [bottles, setBottles] = useState(1);
   const [added, setAdded] = useState(false);
 
-  const subPrice = useMemo(
-    () => subscriptionPrice(base, props.discountPercent),
-    [base, props.discountPercent],
-  );
-  const unit = orderType === "subscription" ? subPrice : base;
   const soldOut = props.stock <= 0;
+
+  const priceFor = (base: number) =>
+    orderType === "subscription" ? subBundlePrice(base, props.discountPercent) : base;
+
+  const selectedTier = BUNDLE_TIERS.find((t) => t.bottles === bottles) ?? BUNDLE_TIERS[0];
+  const unit = priceFor(selectedTier.price);
 
   const buildLine = () => ({
     productId: props.id,
     slug: props.slug,
     name: props.name,
     price: unit,
-    listPrice: props.price,
-    qty,
+    listPrice: bottles * SINGLE_BOTTLE_PRICE,
+    qty: 1,
+    bottles,
     image: props.image,
     orderType,
     intervalDays: orderType === "subscription" ? props.intervalDays : undefined,
@@ -52,86 +58,85 @@ export function PurchaseOptions(props: Props) {
     setAdded(true);
     setTimeout(() => setAdded(false), 1600);
   };
-
   const onBuy = () => {
     addItem(buildLine());
     router.push("/checkout");
   };
 
-  const optionClass = (active: boolean) =>
-    `w-full rounded-xl border p-4 text-left transition-colors ${
-      active ? "border-sage bg-sage-tint" : "border-line bg-cream hover:border-sage-light"
-    }`;
-
   return (
     <div>
       {/* 구매 방식 */}
-      {props.subscriptionEnabled ? (
-        <div className="grid gap-3 sm:grid-cols-2">
-          <button type="button" onClick={() => setOrderType("single")} className={optionClass(orderType === "single")}>
-            <span className="flex items-center justify-between">
-              <span className="text-sm font-semibold text-ink">한 번만 구매</span>
-              {orderType === "single" && <Check size={16} className="text-sage" />}
-            </span>
-            <span className="mt-1 block text-lg font-bold text-ink">{won(base)}</span>
+      {props.subscriptionEnabled && (
+        <div className="grid grid-cols-2 gap-2 rounded-xl border border-line bg-sand/50 p-1">
+          <button
+            type="button"
+            onClick={() => setOrderType("single")}
+            className={`rounded-lg px-3 py-2.5 text-sm font-semibold transition-colors ${
+              orderType === "single" ? "bg-cream text-ink shadow-sm" : "text-muted"
+            }`}
+          >
+            한 번만 구매
           </button>
           <button
             type="button"
             onClick={() => setOrderType("subscription")}
-            className={optionClass(orderType === "subscription")}
+            className={`inline-flex items-center justify-center gap-1.5 rounded-lg px-3 py-2.5 text-sm font-semibold transition-colors ${
+              orderType === "subscription" ? "bg-cream text-sage-dark shadow-sm" : "text-muted"
+            }`}
           >
-            <span className="flex items-center justify-between">
-              <span className="inline-flex items-center gap-1 text-sm font-semibold text-sage-dark">
-                <RefreshCw size={13} /> 정기배송
-              </span>
-              {orderType === "subscription" && <Check size={16} className="text-sage" />}
-            </span>
-            <span className="mt-1 flex items-baseline gap-1.5">
-              <span className="text-lg font-bold text-ink">{won(subPrice)}</span>
-              <span className="text-xs font-semibold text-clay">
-                {props.discountPercent}% 할인
-              </span>
-            </span>
-            <span className="mt-0.5 block text-xs text-muted">
-              {props.intervalDays}일마다 배송 · 언제든 변경·해지
-            </span>
+            <RefreshCw size={13} /> 정기배송 {props.discountPercent}%↓
           </button>
         </div>
-      ) : (
-        <p className="text-2xl font-bold text-ink">{won(base)}</p>
       )}
 
-      {/* 수량 */}
-      <div className="mt-6 flex items-center justify-between">
-        <span className="text-sm font-medium text-muted">수량</span>
-        <div className="flex items-center gap-3 rounded-full border border-line bg-cream px-2 py-1.5">
-          <button
-            type="button"
-            onClick={() => setQty((q) => Math.max(1, q - 1))}
-            className="grid h-7 w-7 place-items-center rounded-full text-ink hover:bg-sage-tint disabled:opacity-40"
-            disabled={qty <= 1}
-            aria-label="수량 감소"
-          >
-            <Minus size={15} />
-          </button>
-          <span className="w-6 text-center text-sm font-semibold">{qty}</span>
-          <button
-            type="button"
-            onClick={() => setQty((q) => Math.min(props.stock || 99, q + 1))}
-            className="grid h-7 w-7 place-items-center rounded-full text-ink hover:bg-sage-tint"
-            aria-label="수량 증가"
-          >
-            <Plus size={15} />
-          </button>
-        </div>
+      {/* 구성(통) 선택 */}
+      <p className="mt-5 mb-2 text-sm font-medium text-muted">구성 선택</p>
+      <div className="grid grid-cols-2 gap-3">
+        {BUNDLE_TIERS.map((tier) => {
+          const price = priceFor(tier.price);
+          const active = bottles === tier.bottles;
+          const saving = bundleSaving(tier.bottles, tier.price);
+          return (
+            <button
+              key={tier.bottles}
+              type="button"
+              onClick={() => setBottles(tier.bottles)}
+              className={`rounded-xl border p-4 text-left transition-colors ${
+                active ? "border-sage bg-sage-tint" : "border-line bg-cream hover:border-sage-light"
+              }`}
+            >
+              <span className="flex items-center justify-between">
+                <span className="text-sm font-bold text-ink">{tier.label}</span>
+                {active && <Check size={16} className="text-sage" />}
+              </span>
+              <span className="mt-1 block text-lg font-bold text-ink">{won(price)}</span>
+              <span className="mt-0.5 block text-xs text-muted">
+                통당 {won(perBottle(price, tier.bottles))}
+              </span>
+              {saving > 0 && (
+                <span className="mt-1.5 inline-block rounded-full bg-clay-tint px-2 py-0.5 text-[11px] font-semibold text-clay">
+                  {won(saving)} 절약
+                </span>
+              )}
+            </button>
+          );
+        })}
       </div>
+
+      {orderType === "subscription" && (
+        <p className="mt-3 rounded-lg bg-sage-tint px-3 py-2 text-xs text-sage-dark">
+          <RefreshCw size={11} className="mr-1 inline" />
+          {props.intervalDays}일마다 배송 · 정기배송가 적용 · 언제든 변경·해지
+        </p>
+      )}
 
       {/* 합계 */}
       <div className="mt-5 flex items-center justify-between border-t border-line pt-5">
         <span className="text-sm text-muted">
-          {orderType === "subscription" ? "정기배송 결제 금액" : "결제 금액"}
+          {selectedTier.label}
+          {orderType === "subscription" ? " · 정기배송가" : ""}
         </span>
-        <span className="text-2xl font-bold text-ink">{won(unit * qty)}</span>
+        <span className="text-2xl font-bold text-ink">{won(unit)}</span>
       </div>
 
       {/* CTA */}
