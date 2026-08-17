@@ -1,0 +1,147 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.min.css");
+@import url("https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&display=swap");
+@import "tailwindcss";
+
+/*
+  내추럴·오가닉 팔레트
+  지배색: 세이지/올리브 그린 · 배경: 크림 · 악센트: 테라코타(클레이)
+  본문 대비는 WCAG AA(4.5:1) 이상을 지킨다.
+*/
+@theme {
+  --color-cream: #faf7f0;
+  --color-sand: #f1ebdd;
+  --color-oat: #e9e1cf;
+  --color-sage: #5e6b50;
+  --color-sage-dark: #454e38;
+  --color-sage-light: #8a9877;
+  --color-sage-tint: #eef0e7;
+  --color-clay: #b45f3c;
+  --color-clay-tint: #f5e5da;
+  --color-ink: #29271f;
+  --color-muted: #6b6656;
+  --color-line: #e4ddcc;
+
+  --font-sans: "Pretendard Variable", Pretendard, system-ui, -apple-system,
+    "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --font-serif: "Nanum Myeongjo", "Noto Serif KR", serif;
+
+  --radius: 0.75rem;
+}
+
+:root {
+  color-scheme: light;
+}
+
+* {
+  border-color: var(--color-line);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  /* 한국어 의미 단위 줄바꿈: 어절 중간에서 끊기지 않게 한다 */
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  line-height: 1.7;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  word-break: keep-all;
+  letter-spacing: -0.02em;
+  line-height: 1.28;
+}
+
+/* 의미 단위 블록 유틸 */
+.kr-block {
+  display: inline-block;
+}
+
+/* 폼 인풋 공통 스타일 */
+.input {
+  width: 100%;
+  border-radius: 0.75rem;
+  border: 1px solid var(--color-line);
+  background-color: var(--color-cream);
+  padding: 0.75rem 1rem;
+  font-size: 0.9375rem;
+  color: var(--color-ink);
+  outline: none;
+}
+.input::placeholder {
+  color: color-mix(in srgb, var(--color-muted) 70%, transparent);
+}
+.input:focus {
+  border-color: var(--color-sage);
+}
+
+.font-display {
+  font-family: var(--font-serif);
+  letter-spacing: -0.01em;
+}
+
+/* 접근성: 키보드 포커스 링 */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--color-sage);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* 페이지 로드 stagger reveal (강한 모션 하나) */
+@keyframes riseIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.reveal {
+  animation: riseIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.reveal-1 { animation-delay: 0.05s; }
+.reveal-2 { animation-delay: 0.14s; }
+.reveal-3 { animation-delay: 0.23s; }
+.reveal-4 { animation-delay: 0.32s; }
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal,
+  .reveal-1,
+  .reveal-2,
+  .reveal-3,
+  .reveal-4 {
+    animation: none !important;
+  }
+  * {
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* 얇은 그레인/텍스처 대신 은은한 유기적 노이즈 배경 유틸 */
+.paper {
+  background-image:
+    radial-gradient(1200px 400px at 100% -10%, rgba(138, 152, 119, 0.14), transparent 60%),
+    radial-gradient(900px 380px at -10% 0%, rgba(180, 95, 60, 0.08), transparent 55%);
+}
