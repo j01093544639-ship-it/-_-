@@ -55,4 +55,4 @@ npm run dev                        # http://localhost:3000
 - 카카오톡 문의: https://open.kakao.com/o/sUHBXsGi
 - 네이버 스토어: https://smartstore.naver.com/chamshinhan2
 
-<!-- deploy: chamshinhan-haru-store preview trigger -->
+<!-- deploy: chamshin-store production trigger 2026-08-18 -->
