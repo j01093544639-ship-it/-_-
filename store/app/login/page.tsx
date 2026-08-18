@@ -46,7 +46,7 @@ export default function LoginPage() {
     setLoading(provider);
     const { error } = await supabase.auth.signInWithOAuth({
       provider,
-      options: { redirectTo: `${window.location.origin}/auth/callback?next=/` },
+      options: { redirectTo: `${window.location.origin}/auth/callback` },
     });
     if (error) {
       setLoading(null);

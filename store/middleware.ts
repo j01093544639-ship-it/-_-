@@ -35,8 +35,9 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  // 정적 자원·이미지·favicon은 미들웨어에서 제외
+  // 정적 자원·이미지·favicon·OAuth 콜백은 미들웨어에서 제외.
+  // (auth/callback은 PKCE code_verifier 쿠키를 콜백 라우트가 직접 읽어야 하므로 반드시 제외)
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)",
+    "/((?!_next/static|_next/image|favicon.ico|auth/callback|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)",
   ],
 };
