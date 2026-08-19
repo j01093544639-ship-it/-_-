@@ -45,7 +45,7 @@ export default function PrivacyPage() {
       </Section>
       <Section no={7} title="개인정보 보호책임자">
         <p>
-          성명 000 · 이메일 privacy@chamshinhan.example · 연락처 1600-0000 (예시 정보, 실제
+          성명 000 · 이메일 jjun1139@naver.com · 연락처 1600-0000 (예시 정보, 실제
           정보로 교체 필요)
         </p>
       </Section>

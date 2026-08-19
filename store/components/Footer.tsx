@@ -1,8 +1,9 @@
 import Link from "next/link";
-import { Leaf, MessageCircle, Store } from "lucide-react";
+import { Leaf, MessageCircle, Store, Mail } from "lucide-react";
 
 const KAKAO_URL = "https://open.kakao.com/o/sUHBXsGi";
 const NAVER_STORE_URL = "https://smartstore.naver.com/chamshinhan2";
+const CONTACT_EMAIL = "jjun1139@naver.com";
 
 export function Footer() {
   return (
@@ -36,6 +37,12 @@ export function Footer() {
                 className="inline-flex items-center gap-1.5 rounded-full border border-line bg-cream px-3.5 py-2 text-xs font-semibold text-ink hover:bg-sage-tint"
               >
                 <Store size={14} /> 네이버 스토어
+              </a>
+              <a
+                href={`mailto:${CONTACT_EMAIL}`}
+                className="inline-flex items-center gap-1.5 rounded-full border border-line bg-cream px-3.5 py-2 text-xs font-semibold text-ink hover:bg-sage-tint"
+              >
+                <Mail size={14} /> 이메일 문의
               </a>
             </div>
           </div>
@@ -90,7 +97,10 @@ export function Footer() {
             대표 000 · 사업자등록번호 000-00-00000 · 통신판매업신고 2026-서울○○-0000
             <br />
             주소 서울특별시 ○○구 ○○로 00, 0층 · 고객센터 1600-0000 (평일 10:00–17:00) ·
-            이메일 help@chamshinhan.example
+            이메일{" "}
+            <a href={`mailto:${CONTACT_EMAIL}`} className="underline hover:text-sage">
+              {CONTACT_EMAIL}
+            </a>
           </p>
           <p className="mt-3 text-muted/80">
             본 사이트의 상품은 일반 건강식품이며, 특정 질병의 예방·치료 효과나 의약품의 대체

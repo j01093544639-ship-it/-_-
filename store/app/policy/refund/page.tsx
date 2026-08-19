@@ -37,7 +37,7 @@ export default function RefundPage() {
       </Section>
       <Section no={5} title="문의">
         <p>
-          교환·환불 문의는 고객센터 1600-0000 (평일 10:00–17:00) 또는 help@chamshinhan.example로
+          교환·환불 문의는 고객센터 1600-0000 (평일 10:00–17:00) 또는 jjun1139@naver.com로
           접수해주세요. (예시 정보, 실제 정보로 교체 필요)
         </p>
       </Section>
