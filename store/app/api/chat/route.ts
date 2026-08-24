@@ -1,4 +1,4 @@
-import { streamText, type ModelMessage } from "ai";
+import { generateText, type ModelMessage } from "ai";
 import { PRODUCTS } from "@/lib/products";
 
 // 상담 응답은 스트리밍이라 시간이 걸릴 수 있음
@@ -41,17 +41,22 @@ export async function POST(req: Request) {
     const body = (await req.json()) as { messages?: ModelMessage[] };
     const messages = Array.isArray(body.messages) ? body.messages.slice(-12) : [];
 
-    const result = streamText({
+    const { text } = await generateText({
       model: MODEL,
       system: SYSTEM_PROMPT,
       messages,
       temperature: 0.3,
     });
 
-    return result.toTextStreamResponse();
-  } catch {
-    return new Response("상담 처리 중 오류가 발생했어요. 잠시 후 다시 시도해주세요.", {
-      status: 500,
+    return new Response(text || "죄송해요, 답변을 만들지 못했어요.", {
+      headers: { "Content-Type": "text/plain; charset=utf-8" },
+    });
+  } catch (err) {
+    // 실제 원인을 화면에 노출(디버깅용). 안정화 후 일반 메시지로 교체 예정.
+    const message = err instanceof Error ? err.message : String(err);
+    return new Response(`⚠️ 챗봇 연결 오류: ${message}`, {
+      status: 200,
+      headers: { "Content-Type": "text/plain; charset=utf-8" },
     });
   }
 }
